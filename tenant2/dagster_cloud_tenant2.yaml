@@ -1,6 +1,6 @@
 locations:
   - location_name: prod
     code_source:
-      - python_file: definitions.py
+      python_file: definitions.py
     build:
       directory: ./tenant2
