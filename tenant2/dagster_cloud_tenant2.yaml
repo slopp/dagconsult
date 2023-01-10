@@ -1,0 +1,6 @@
+locations:
+  - location_name: prod
+    load_from:
+      - python_file: definitions.py
+    build:
+      directory: ./tenant1

@@ -1,0 +1,2 @@
+utils @ file:///opt/dagster/app/shared-asset-package
+dagster-cloud
