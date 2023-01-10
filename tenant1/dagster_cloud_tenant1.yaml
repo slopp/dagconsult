@@ -3,4 +3,4 @@ locations:
     load_from:
       - python_file: definitions.py
     build:
-      directory: ./tenant2
+      directory: ./tenant1
