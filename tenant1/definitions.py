@@ -1,4 +1,5 @@
-from shared_asset_package import my_shared_asset, my_shared_configurable_resource
+from shared_asset_package import my_shared_asset
+from shared_asset_package import  my_shared_configurable_resource
 from dagster import Definitions 
 
 defs = Definitions(
