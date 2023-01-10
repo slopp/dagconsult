@@ -43,7 +43,7 @@ jobs:
           ref: ${{ github.head_ref }}
       - name: Copy Shared Package for Tenant1
         run: | 
-          cp -r ./shared_asset_package ./tenant1/shared_asset_package  
+          cp -r ./shared-asset-package ./tenant1/shared-asset-package  
       - name: Build and deploy to Dagster Cloud serverless
         uses: dagster-io/dagster-cloud-action/actions/serverless_prod_deploy@v0.1.15
         with:
@@ -86,7 +86,7 @@ jobs:
           ref: ${{ github.head_ref }}
       - name: Copy Shared Package for Tenant 2
         run: | 
-          cp -r ./shared_asset_package ./tenant2/shared_asset_package  
+          cp -r ./shared-asset-package ./tenant2/shared-asset-package  
       - name: Build and deploy to Dagster Cloud serverless
         uses: dagster-io/dagster-cloud-action/actions/serverless_prod_deploy@v0.1.15
         with:
