@@ -11,49 +11,31 @@ concurrency:
 env:
   DAGSTER_CLOUD_URL: ${{ secrets.DAGSTER_CLOUD_URL }}
   DAGSTER_CLOUD_API_TOKEN: ${{ secrets.DAGSTER_CLOUD_API_TOKEN }}
-  ENABLE_FAST_DEPLOYS: 'false'
+  
 
-jobs:
-  dagster_cloud_default_deploy:
-    name: Dagster Serverless Deploy
+jobs: 
+  parse_tenant1:
+    name: Deploy Tenant 1
     runs-on: ubuntu-latest
     outputs:
       build_info: ${{ steps.parse-workspace.outputs.build_info }}
     
     steps:
-      - name: Parse cloud workspace
-        if: env.ENABLE_FAST_DEPLOYS != 'true'
+     - name: Parse Tenant 1
         id: parse-workspace
         uses: dagster-io/dagster-cloud-action/actions/utils/parse_workspace@v0.1
         with:
-          dagster_cloud_file: dagster_cloud.yaml
+          dagster_cloud_file: dagster_cloud_tenant1.yaml
 
-      - name: Checkout
-        if: env.ENABLE_FAST_DEPLOYS == 'true'
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-          path: project-repo
-          
-      - name: Build and deploy Python executable
-        if: env.ENABLE_FAST_DEPLOYS == 'true'
-        uses: dagster-io/dagster-cloud-action/actions/build_deploy_python_executable@pex-v0.1
-        with:
-          dagster_cloud_file: "$GITHUB_WORKSPACE/project-repo/dagster_cloud.yaml"
-          build_output_dir: "$GITHUB_WORKSPACE/build"
-          python_version: "3.8"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  dagster_cloud_docker_deploy:
-    name: Dagster Serverless Docker Deploy
+  deploy_tenant1:
+    name: Deploy Tenant 1
     runs-on: ubuntu-latest
-    if: needs.dagster_cloud_default_deploy.outputs.build_info
-    needs: dagster_cloud_default_deploy
+    if: needs.parse_tentant1.outputs.build_info
+    needs: parse_tentant1
     strategy:
       fail-fast: false
       matrix:
-        location: ${{ fromJSON(needs.dagster_cloud_default_deploy.outputs.build_info) }}
+        location: ${{ fromJSON(needs.parse_tenant1.outputs.build_info) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -61,10 +43,7 @@ jobs:
           ref: ${{ github.head_ref }}
       - name: Copy Shared Package for Tenant1
         run: | 
-          cp -r ./shared_asset_package ./tenant1/shared_asset_package 
-      - name: Copy Shared Package for Tenant2
-        run: | 
-          cp -r ./shared_asset_package ./tenant2/shared_asset_package 
+          cp -r ./shared_asset_package ./tenant1/shared_asset_package  
       - name: Build and deploy to Dagster Cloud serverless
         uses: dagster-io/dagster-cloud-action/actions/serverless_prod_deploy@v0.1.15
         with:
@@ -74,6 +53,52 @@ jobs:
           # env_vars: ${{ toJson(secrets) }}
           organization_id: ${{ secrets.ORGANIZATION_ID }}
           checkout_repo: 'false'
+          deployement: 'tenant1'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  parse_tenant2:
+    name: Deploy Tenant 2
+    runs-on: ubuntu-latest
+    outputs:
+      build_info: ${{ steps.parse-workspace.outputs.build_info }}
+    
+    steps:
+     - name: Parse Tenant 2
+        id: parse-workspace
+        uses: dagster-io/dagster-cloud-action/actions/utils/parse_workspace@v0.1
+        with:
+          dagster_cloud_file: dagster_cloud_tenant2.yaml
+
+  deploy_tenant2:
+    name: Deploy Tenant 2
+    runs-on: ubuntu-latest
+    if: needs.parse_tentant1.outputs.build_info
+    needs: parse_tentant1
+    strategy:
+      fail-fast: false
+      matrix:
+        location: ${{ fromJSON(needs.parse_tenant2.outputs.build_info) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Copy Shared Package for Tenant 2
+        run: | 
+          cp -r ./shared_asset_package ./tenant2/shared_asset_package  
+      - name: Build and deploy to Dagster Cloud serverless
+        uses: dagster-io/dagster-cloud-action/actions/serverless_prod_deploy@v0.1.15
+        with:
+          dagster_cloud_api_token: ${{ secrets.DAGSTER_CLOUD_API_TOKEN }}
+          location: ${{ toJson(matrix.location) }}
+          # Uncomment to pass through Github Action secrets as a JSON string of key-value pairs
+          # env_vars: ${{ toJson(secrets) }}
+          organization_id: ${{ secrets.ORGANIZATION_ID }}
+          checkout_repo: 'false'
+          deployement: 'tenant2'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+
 
