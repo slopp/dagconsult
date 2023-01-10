@@ -22,10 +22,10 @@ jobs:
     
     steps:
      - name: Parse Tenant 1
-        id: parse-workspace
-        uses: dagster-io/dagster-cloud-action/actions/utils/parse_workspace@v0.1
-        with:
-          dagster_cloud_file: dagster_cloud_tenant1.yaml
+       id: parse-workspace
+       uses: dagster-io/dagster-cloud-action/actions/utils/parse_workspace@v0.1
+       with:
+         dagster_cloud_file: dagster_cloud_tenant1.yaml
 
   deploy_tenant1:
     name: Deploy Tenant 1
@@ -65,10 +65,10 @@ jobs:
     
     steps:
      - name: Parse Tenant 2
-        id: parse-workspace
-        uses: dagster-io/dagster-cloud-action/actions/utils/parse_workspace@v0.1
-        with:
-          dagster_cloud_file: dagster_cloud_tenant2.yaml
+       id: parse-workspace
+       uses: dagster-io/dagster-cloud-action/actions/utils/parse_workspace@v0.1
+       with:
+        dagster_cloud_file: dagster_cloud_tenant2.yaml
 
   deploy_tenant2:
     name: Deploy Tenant 2
