@@ -53,7 +53,7 @@ jobs:
           # env_vars: ${{ toJson(secrets) }}
           organization_id: ${{ secrets.ORGANIZATION_ID }}
           checkout_repo: 'false'
-          deployement: 'tenant1'
+          deployment: 'tenant1'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -96,7 +96,7 @@ jobs:
           # env_vars: ${{ toJson(secrets) }}
           organization_id: ${{ secrets.ORGANIZATION_ID }}
           checkout_repo: 'false'
-          deployement: 'tenant2'
+          deployment: 'tenant2'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
